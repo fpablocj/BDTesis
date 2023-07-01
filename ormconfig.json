@@ -1,9 +1,9 @@
 {
   "type": "mysql",
-  "host": "localhost",
+  "host": "db",
   "port": 3306,
   "username": "root",
-  "password": "",
+  "password": "root",
   "database": "crm",
   "synchronize": true,
   "logging": false,
