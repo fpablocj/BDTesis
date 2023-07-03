@@ -1,0 +1,1 @@
+INSERT INTO `users` (`id`, `username`, `password`, `role`, `carrera_asignada`, `name`) VALUES (NULL, 'mcampoverde@ucacue.edu.ec', '$2a$10$9U/L2w4lmTGS9Nymm/booO2NBpWw4tnV9NrE5O.Jvbl4mnqnTYbzO', 'ADMIN', 'TODAS', 'Administrador');
