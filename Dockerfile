@@ -13,6 +13,8 @@ RUN npm install
 # Copia el resto de los archivos de la aplicación
 COPY . .
 
+COPY init.sql /docker-entrypoint-initdb.d/
+
 # Expone el puerto en el que se ejecuta la aplicación de Node.js
 EXPOSE 3000
 
