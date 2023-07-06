@@ -14,12 +14,12 @@ router.get('/c/:carrera', ProspectoController.getByCarrera);
 router.get('/:id_prospecto', ProspectoController.getById);
 
 // Create a new user
-router.post('/', [checkJwt, checkRole(['ADMIN'])], ProspectoController.new);
+router.post('/', ProspectoController.new);
 
 // Edit user
 router.patch('/:id_prospecto', ProspectoController.edit);
 
 // Delete
-router.delete('/:id_prospecto', [checkJwt, checkRole(['ADMIN'])], ProspectoController.delete);
+router.delete('/:id_prospecto', ProspectoController.delete);
 
 export default router;

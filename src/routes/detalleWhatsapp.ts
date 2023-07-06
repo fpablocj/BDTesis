@@ -12,7 +12,7 @@ router.get('/', DetalleMensajeController.getAll);
 router.get('/:id_wpp', DetalleMensajeController.getById);
 
 // Create a new user
-router.post('/', [checkJwt, checkRole(['ADMIN'])], DetalleMensajeController.new);
+router.post('/', DetalleMensajeController.new);
 
 // Edit user
 router.patch('/:id_wpp', [checkJwt, checkRole(['ADMIN'])], DetalleMensajeController.edit);

@@ -54,7 +54,7 @@ export class MensajeController {
       let newMensaje = await whatsappRepository.save(wpp);
       res.send({id: newMensaje.id_wpp});
     } catch (e) {
-      return res.status(409).json({ message: 'wpp already exist' });
+      return res.status(409).json({ message: 'wpp already exist', e });
     }
     // All ok
     //res.send('wpp created');

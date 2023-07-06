@@ -55,7 +55,7 @@ export class CorreoController {
       let newCorreo = await correoRepository.save(correo);
       res.send({id: newCorreo.id_correo});
     } catch (e) {
-      return res.status(409).json({ message: 'correo already exist' });
+      return res.status(409).json({ message: 'correo already exist', e });
     }
     // All ok
     //res.send('correo created');

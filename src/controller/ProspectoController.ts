@@ -96,7 +96,8 @@ export class ProspectoController {
       //prospecto.hashPassword();
       await prospectoRepository.save(prospecto);
     } catch (e) {
-      return res.status(409).json({ message: 'Prospecto already exist' });
+      console.log(e)
+      return res.status(409).json({ message: 'Prospecto already exist', e });
     }
     // All ok
     res.send('Prospecto created');
