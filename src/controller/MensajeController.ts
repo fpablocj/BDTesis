@@ -57,7 +57,7 @@ export class MensajeController {
       return res.status(409).json({ message: 'wpp already exist', e });
     }
     // All ok
-    //res.send('wpp created');
+    res.send({ message: 'wpp created' });
   };
 
   static edit = async (req: Request, res: Response) => {

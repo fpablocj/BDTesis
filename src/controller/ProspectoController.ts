@@ -100,7 +100,7 @@ export class ProspectoController {
       return res.status(409).json({ message: 'Prospecto already exist', e });
     }
     // All ok
-    res.send('Prospecto created');
+    res.send({ message: 'Prospecto created' });
   };
 
   static edit = async (req: Request, res: Response) => {
@@ -162,7 +162,12 @@ export class ProspectoController {
     }
 
     // Remove user
-    prospectoRepository.delete(id_prospecto);
+    try{
+      await prospectoRepository.delete(id_prospecto);
+    } catch (e){
+      return res.status(409).json({ message: 'Prospecto', e });
+    }
+    
     res.status(201).json({ message: ' Prospecto deleted' });
   };
 }

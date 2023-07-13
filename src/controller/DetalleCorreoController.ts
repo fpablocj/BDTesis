@@ -56,7 +56,7 @@ export class DetalleCorreoController {
       return res.status(409).json({ message: 'detalleCorreo already exist' });
     }
     // All ok
-    res.send('detalleCorreo created');
+    res.send({message: 'detalleCorreo created'});
   };
 
   static edit = async (req: Request, res: Response) => {

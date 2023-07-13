@@ -56,7 +56,7 @@ export class DetalleMensajeController {
       return res.status(409).json({ message: 'detalleMensaje already exist' });
     }
     // All ok
-    res.send('detalleMensaje created');
+    res.send({message: 'detalleMensaje created'});
   };
 
   static edit = async (req: Request, res: Response) => {
