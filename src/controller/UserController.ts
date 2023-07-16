@@ -60,7 +60,7 @@ export class UserController {
       return res.status(409).json({ message: 'Username already exist' });
     }
     // All ok
-    res.send('User created');
+    res.send({message: 'User created'});
   };
 
   static edit = async (req: Request, res: Response) => {
