@@ -58,7 +58,7 @@ export class CorreoController {
       return res.status(409).json({ message: 'correo already exist', e });
     }
     // All ok
-    res.send({message: 'correo created'});
+    //res.send({message: 'correo created'});
   };
 
   static edit = async (req: Request, res: Response) => {

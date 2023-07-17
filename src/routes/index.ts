@@ -6,6 +6,7 @@ import correo from './correo';
 import detalleCorreo from './detalleCorreo';
 import detalleWhatsapp from './detalleWhatsapp'
 import whatsapp from './whatsapp'
+import periodoAcademico from './periodoAcademico'
 
 
 const routes = Router();
@@ -16,6 +17,7 @@ routes.use('/prospectos', prospecto);
 routes.use('/correos', correo);
 routes.use('/detalleCorreos', detalleCorreo);
 routes.use('/whatsapp', whatsapp )
-routes.use('/detalleWhatsapp', detalleWhatsapp);
+routes.use('/detalleWhatsapp', detalleWhatsapp); 
+routes.use('/periodoAcademico', periodoAcademico);
 
 export default routes;

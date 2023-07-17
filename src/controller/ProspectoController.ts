@@ -9,7 +9,7 @@ export class ProspectoController {
     let prospectos;
 
     try {
-      prospectos = await prospectoRepository.find({ select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'carrera_interes', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'], relations: ['user']  });
+      prospectos = await prospectoRepository.find({ select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'carrera_interes', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'], relations: ['user', 'periodo']  });
     } catch (e) {
       res.status(404).json({ message: 'Somenthing goes wrong!' });
     }
@@ -33,7 +33,7 @@ export class ProspectoController {
           prospectos = await prospectoRepository.find({
             where: { carrera_interes: Like(`%${carrera}%`) }, // Filtrar por nombres que coincidan parcialmente con el filtro
             select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'carrera_interes', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
-            relations: ['user']
+            relations: ['user', 'periodo']
           });
 
     } catch (e) {
@@ -60,14 +60,14 @@ export class ProspectoController {
   };
 
   static new = async (req: Request, res: Response) => {
-    const { cedula, tipo_documento, nombres, estado, celular, fecha_registro, correo, carrera_interes, jornada, pais, provincia, ciudad, sexo, colegio, fuente_registro, comentario, user } = req.body;
+    const { cedula, tipo_documento, nombres, estado, celular, fecha_registro, correo, carrera_interes, jornada, pais, provincia, ciudad, sexo, colegio, fuente_registro, comentario, user, periodo } = req.body;
     const prospecto = new Prospectos();
 
     prospecto.cedula = cedula;
     prospecto.tipo_documento = tipo_documento;
     prospecto.nombres = nombres;
     prospecto.estado = estado;
-    //prospecto.idperiodo = idperiodo;
+    prospecto.periodo = periodo;
     prospecto.celular = celular;
     prospecto.fecha_registro = fecha_registro;
     prospecto.correo = correo;
@@ -106,7 +106,7 @@ export class ProspectoController {
   static edit = async (req: Request, res: Response) => {
     let prospecto;
     const { id_prospecto } = req.params;
-    const { cedula, tipo_documento, nombres, estado, idperiodo, celular, fecha_registro, correo, carrera_interes, jornada, pais, provincia, ciudad, sexo, colegio, fuente_registro, comentario, user } = req.body;
+    const { cedula, tipo_documento, nombres, estado, idperiodo, celular, fecha_registro, correo, carrera_interes, jornada, pais, provincia, ciudad, sexo, colegio, fuente_registro, comentario, user, periodo } = req.body;
 
     const prospectoRepository = getRepository(Prospectos);
     // Try get user
@@ -130,6 +130,7 @@ export class ProspectoController {
       prospecto.fuente_registro = fuente_registro;
       prospecto.comentario = comentario;
       prospecto.user = user;
+      prospecto.periodo = periodo;
     } catch (e) {
       return res.status(404).json({ message: 'Prospecto not found' });
     }

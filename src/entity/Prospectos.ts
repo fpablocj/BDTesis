@@ -22,9 +22,7 @@ export class Prospectos {
   @Column({ type: "varchar", length: 20 })
   estado: string;
 
-  /*@ManyToOne(() => PeriodoAcademico, (periodo) => periodo.prospectos)
-  @JoinColumn({ name: "id_periodo" })
-  periodo_academico: PeriodoAcademico;*/
+  
 
   @Column({ type: "varchar", length: 12 })
   celular: string;
@@ -61,6 +59,10 @@ export class Prospectos {
 
   @Column({ type: "varchar", length: 300 })
   comentario: string;
+
+  @ManyToOne(() => PeriodoAcademico, (periodo) => periodo.prospecto)
+  @JoinColumn({ name: "id_periodo" })
+  periodo: PeriodoAcademico;
 
   @ManyToOne(() => Users, (user) => user.prospecto)
   @JoinColumn({ name: "idusuario" })
