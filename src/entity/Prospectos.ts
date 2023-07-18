@@ -19,7 +19,7 @@ export class Prospectos {
   @Column({ type: "varchar", length: 250 })
   nombres: string;
 
-  @Column({ type: "varchar", length: 20 })
+  @Column({ type: "varchar", length: 50 })
   estado: string;
 
   
