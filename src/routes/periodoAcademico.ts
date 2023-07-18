@@ -9,6 +9,8 @@ router.get('/', PeriodoAcademicoController.getAll);
 // Create a new user
 router.post('/', PeriodoAcademicoController.new);
 
+router.post('/activar/:id_periodo', PeriodoAcademicoController.activarPeriodoAcademico);
+
 // Edit user
 router.patch('/:id_periodo', PeriodoAcademicoController.edit);
 
