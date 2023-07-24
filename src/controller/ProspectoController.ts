@@ -21,30 +21,28 @@ export class ProspectoController {
     }
   };
 
-  static getByCarrera = async (req: Request, res: Response) => {
+  static getByCarreraPaginado = async (req: Request, res: Response) => {
+    const { carrera, page, pageSize } = req.params; // Obtener los parámetros de búsqueda desde la solicitud
+
     const prospectoRepository = getRepository(Prospectos);
-    let prospectos;
-
-    const { carrera } = req.params; // Obtener el parámetro de búsqueda desde la solicitud
-
 
     try {
-        // Si se proporciona un filtro, realizar la consulta con el filtro
-          prospectos = await prospectoRepository.find({
-            where: { carrera_interes: Like(`%${carrera}%`) }, // Filtrar por nombres que coincidan parcialmente con el filtro
-            select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'carrera_interes', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
-            relations: ['user', 'periodo']
-          });
+      const [prospectos, totalItems] = await prospectoRepository.findAndCount({
+        where: { carrera_interes: Like(`%${carrera}%`) }, // Filtrar por nombres que coincidan parcialmente con el filtro
+        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'carrera_interes', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
+        relations: ['user', 'periodo'],
+        take: parseInt(pageSize), // Convertir el valor de pageSize a número
+        skip: (parseInt(page) - 1) * parseInt(pageSize), // Convertir el valor de page a número y calcular el desplazamiento para obtener la página solicitada
+      });
 
+      if (prospectos.length > 0) {
+        const totalPages = Math.ceil(totalItems / parseInt(pageSize)); // Convertir el valor de pageSize a número
+        res.send({ prospectos, totalItems, totalPages });
+      } else {
+        res.status(404).json({ message: 'No results' });
+      }
     } catch (e) {
       res.status(404).json({ message: 'Something goes wrong!' });
-      return;
-    }
-
-    if (prospectos.length > 0) {
-      res.send(prospectos);
-    } else {
-      res.status(404).json({ message: 'No results' });
     }
   };
 
@@ -52,7 +50,7 @@ export class ProspectoController {
     const { id_prospecto } = req.params;
     const prospectoRepository = getRepository(Prospectos);
     try {
-      const prospecto = await prospectoRepository.findOneOrFail(id_prospecto);
+      const prospecto = await prospectoRepository.findOneOrFail(id_prospecto, { select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'carrera_interes', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'], relations: ['user', 'periodo']  });
       res.send(prospecto);
     } catch (e) {
       res.status(404).json({ message: 'Not result' });
@@ -170,6 +168,31 @@ export class ProspectoController {
     }
     
     res.status(201).json({ message: ' Prospecto deleted' });
+  };
+
+
+  static getAllPaginado = async (req: Request, res: Response) => {
+    const { page, pageSize } = req.params; // Obtener los parámetros de paginación desde la solicitud
+
+    const prospectoRepository = getRepository(Prospectos);
+
+    try {
+      const [prospectos, totalItems] = await prospectoRepository.findAndCount({
+        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'carrera_interes', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
+        relations: ['user', 'periodo'],
+        take: parseInt(pageSize),
+        skip: (parseInt(page) - 1) * parseInt(pageSize), // Calcular el desplazamiento para obtener la página solicitada
+      });
+
+      if (prospectos.length > 0) {
+        const totalPages = Math.ceil(totalItems /  parseInt(pageSize));
+        res.send({ prospectos, totalItems, totalPages });
+      } else {
+        res.status(404).json({ message: 'No results' });
+      }
+    } catch (e) {
+      res.status(404).json({ message: 'Something goes wrong!' });
+    }
   };
 }
 

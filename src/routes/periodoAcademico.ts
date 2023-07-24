@@ -6,6 +6,8 @@ const router = Router();
 // Get all users
 router.get('/', PeriodoAcademicoController.getAll);
 
+router.get('/:id_periodo', PeriodoAcademicoController.getById);
+
 // Create a new user
 router.post('/', PeriodoAcademicoController.new);
 

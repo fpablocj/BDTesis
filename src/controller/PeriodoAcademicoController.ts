@@ -104,6 +104,17 @@ export class PeriodoAcademicoController {
       return res.status(404).json({ message: 'Academic period not found' });
     }
   };
+
+  static getById = async (req: Request, res: Response) => {
+    const { id_periodo } = req.params;
+    const periodoRepository = getRepository(PeriodoAcademico);
+    try {
+      const periodo = await periodoRepository.findOneOrFail(id_periodo);
+      res.send(periodo);
+    } catch (e) {
+      res.status(404).json({ message: 'Not result' });
+    }
+  };
 }
 
 export default PeriodoAcademicoController;

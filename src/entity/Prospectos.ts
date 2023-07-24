@@ -22,8 +22,8 @@ export class Prospectos {
   @Column({ type: "varchar", length: 50 })
   estado: string;
 
-  
 
+  
   @Column({ type: "varchar", length: 12 })
   celular: string;
 

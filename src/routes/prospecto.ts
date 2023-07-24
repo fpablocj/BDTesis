@@ -8,7 +8,9 @@ const router = Router();
 // Get all users
 router.get('/', ProspectoController.getAll);
 
-router.get('/c/:carrera', ProspectoController.getByCarrera);
+router.get('/c/:carrera/paginados/:page/:pageSize', ProspectoController.getByCarreraPaginado);
+
+router.get('/paginados/:page/:pageSize', ProspectoController.getAllPaginado);
 
 // Get one user
 router.get('/:id_prospecto', ProspectoController.getById);
