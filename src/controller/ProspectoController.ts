@@ -9,7 +9,7 @@ export class ProspectoController {
     let prospectos;
 
     try {
-      prospectos = await prospectoRepository.find({ select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'carrera_interes', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'], relations: ['user', 'periodo']  });
+      prospectos = await prospectoRepository.find({ select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'], relations: ['user', 'periodo', 'carrera']  });
     } catch (e) {
       res.status(404).json({ message: 'Somenthing goes wrong!' });
     }
@@ -28,11 +28,11 @@ export class ProspectoController {
 
     try {
       const [prospectos, totalItems] = await prospectoRepository.findAndCount({
-        where: { carrera_interes: Like(`%${carrera}%`) }, // Filtrar por nombres que coincidan parcialmente con el filtro
-        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'carrera_interes', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
-        relations: ['user', 'periodo'],
-        take: parseInt(pageSize), // Convertir el valor de pageSize a número
-        skip: (parseInt(page) - 1) * parseInt(pageSize), // Convertir el valor de page a número y calcular el desplazamiento para obtener la página solicitada
+        where: { carrera: carrera },
+        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
+        relations: ['user', 'periodo', 'carrera'],
+        take: parseInt(pageSize),
+        skip: (parseInt(page) - 1) * parseInt(pageSize),
       });
 
       if (prospectos.length > 0) {
@@ -46,11 +46,36 @@ export class ProspectoController {
     }
   };
 
+  static getByCarrera = async (req: Request, res: Response) => {
+    const prospectoRepository = getRepository(Prospectos);
+    let prospectos;
+
+    const { carrera } = req.params; // Obtener el parámetro de búsqueda desde la solicitud
+
+    try {
+          prospectos = await prospectoRepository.find({
+            where: { carrera: carrera },
+            select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
+            relations: ['user', 'periodo', 'carrera']
+          });
+
+    } catch (e) {
+      res.status(404).json({ message: 'Something goes wrong!' });
+      return;
+    }
+
+    if (prospectos.length > 0) {
+      res.send(prospectos);
+    } else {
+      res.status(404).json({ message: 'No results' });
+    }
+  };
+
   static getById = async (req: Request, res: Response) => {
     const { id_prospecto } = req.params;
     const prospectoRepository = getRepository(Prospectos);
     try {
-      const prospecto = await prospectoRepository.findOneOrFail(id_prospecto, { select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'carrera_interes', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'], relations: ['user', 'periodo']  });
+      const prospecto = await prospectoRepository.findOneOrFail(id_prospecto, { select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo','jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'], relations: ['user', 'periodo', 'carrera']  });
       res.send(prospecto);
     } catch (e) {
       res.status(404).json({ message: 'Not result' });
@@ -58,7 +83,7 @@ export class ProspectoController {
   };
 
   static new = async (req: Request, res: Response) => {
-    const { cedula, tipo_documento, nombres, estado, celular, fecha_registro, correo, carrera_interes, jornada, pais, provincia, ciudad, sexo, colegio, fuente_registro, comentario, user, periodo } = req.body;
+    const { cedula, tipo_documento, nombres, estado, celular, fecha_registro, correo, carrera, jornada, pais, provincia, ciudad, sexo, colegio, fuente_registro, comentario, user, periodo } = req.body;
     const prospecto = new Prospectos();
 
     prospecto.cedula = cedula;
@@ -69,7 +94,7 @@ export class ProspectoController {
     prospecto.celular = celular;
     prospecto.fecha_registro = fecha_registro;
     prospecto.correo = correo;
-    prospecto.carrera_interes = carrera_interes;
+    prospecto.carrera = carrera;
     prospecto.jornada = jornada;
     prospecto.pais = pais;
     prospecto.provincia = provincia;
@@ -94,7 +119,6 @@ export class ProspectoController {
       //prospecto.hashPassword();
       await prospectoRepository.save(prospecto);
     } catch (e) {
-      console.log(e)
       return res.status(409).json({ message: 'Prospecto already exist', e });
     }
     // All ok
@@ -104,7 +128,7 @@ export class ProspectoController {
   static edit = async (req: Request, res: Response) => {
     let prospecto;
     const { id_prospecto } = req.params;
-    const { cedula, tipo_documento, nombres, estado, idperiodo, celular, fecha_registro, correo, carrera_interes, jornada, pais, provincia, ciudad, sexo, colegio, fuente_registro, comentario, user, periodo } = req.body;
+    const { cedula, tipo_documento, nombres, estado, idperiodo, celular, fecha_registro, correo, carrera, jornada, pais, provincia, ciudad, sexo, colegio, fuente_registro, comentario, user, periodo } = req.body;
 
     const prospectoRepository = getRepository(Prospectos);
     // Try get user
@@ -118,7 +142,7 @@ export class ProspectoController {
       prospecto.celular = celular;
       prospecto.fecha_registro = fecha_registro;
       prospecto.correo = correo;
-      prospecto.carrera_interes = carrera_interes;
+      prospecto.carrera = carrera;
       prospecto.jornada = jornada;
       prospecto.pais = pais;
       prospecto.provincia = provincia;
@@ -178,10 +202,10 @@ export class ProspectoController {
 
     try {
       const [prospectos, totalItems] = await prospectoRepository.findAndCount({
-        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'carrera_interes', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
-        relations: ['user', 'periodo'],
+        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
+        relations: ['user', 'periodo', 'carrera'],
         take: parseInt(pageSize),
-        skip: (parseInt(page) - 1) * parseInt(pageSize), // Calcular el desplazamiento para obtener la página solicitada
+        skip: (parseInt(page) - 1) * parseInt(pageSize),
       });
 
       if (prospectos.length > 0) {

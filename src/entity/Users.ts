@@ -1,7 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Unique, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Unique, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { MinLength, IsNotEmpty, IsEmail } from 'class-validator';
 import * as bcrypt from 'bcryptjs';
 import { Prospectos } from './Prospectos';
+import { Carreras } from './Carreras';
+import { Whatsapp } from './Whatsapp';
 
 @Entity()
 @Unique(['username'])
@@ -28,12 +30,17 @@ export class Users {
   @IsNotEmpty()
   role: string;
 
-  @Column()
-  @IsNotEmpty()
-  carrera_asignada: string;
+  @ManyToOne(() => Carreras, (carrera)=> carrera.prospecto)
+  @JoinColumn({ name: "id_carrera"})
+  carrera: Carreras;
 
   @OneToMany(() => Prospectos, (prospecto) => prospecto.user)
+  @JoinColumn({name: 'id_prospecto'})
   prospecto: Prospectos[];
+
+  @OneToMany(() => Whatsapp, (whatsapp) => whatsapp.user)
+  @JoinColumn({name: 'id_wpp'})
+  whatsapp: Whatsapp[];
 
 
   hashPassword(): void {

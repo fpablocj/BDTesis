@@ -9,7 +9,7 @@ export class UserController {
     let users;
 
     try {
-      users = await userRepository.find({ select: ['id', 'name', 'username', 'role', 'carrera_asignada'] });
+      users = await userRepository.find({ select: ['id', 'name', 'username', 'role'], relations: ['carrera'] });
     } catch (e) {
       res.status(404).json({ message: 'Somenthing goes wrong!' });
     }
@@ -25,15 +25,15 @@ export class UserController {
     const { id } = req.params;
     const userRepository = getRepository(Users);
     try {
-      const user = await userRepository.findOneOrFail(id);
+      const user = await userRepository.findOneOrFail(id, {select:['name', 'username', 'role', 'password'], relations:['carrera']});
       res.send(user);
     } catch (e) {
-      res.status(404).json({ message: 'Not result' });
+      res.status(404).json({ message: 'Not result', e });
     }
   };
 
   static new = async (req: Request, res: Response) => {
-    const { name, username, password, role, carrera_asignada } = req.body;
+    const { name, username, password, role, carrera } = req.body;
     const user = new Users();
 
 
@@ -41,7 +41,7 @@ export class UserController {
     user.username = username;
     user.password = password;
     user.role = role;
-    user.carrera_asignada = carrera_asignada;
+    user.carrera = carrera;
 
     // Validate
     const validationOpt = { validationError: { target: false, value: false } };
@@ -66,16 +66,15 @@ export class UserController {
   static edit = async (req: Request, res: Response) => {
     let user;
     const { id } = req.params;
-    const { name, username, role, carrera_asignada } = req.body;
+    const { name, username, role, carrera } = req.body;
 
     const userRepository = getRepository(Users);
-    // Try get user
     try {
       user = await userRepository.findOneOrFail(id);
       user.name = name;
       user.username = username;
       user.role = role;
-      user.carrera_asignada = carrera_asignada;
+      user.carrera = carrera;
     } catch (e) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -86,7 +85,6 @@ export class UserController {
       return res.status(400).json(errors);
     }
 
-    // Try to save user
     try {
       await userRepository.save(user);
     } catch (e) {
@@ -107,7 +105,6 @@ export class UserController {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Remove user
     userRepository.delete(id);
     res.status(201).json({ message: ' User deleted' });
   };

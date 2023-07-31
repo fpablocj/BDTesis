@@ -9,9 +9,9 @@ export class MensajeController {
     let mensajes;
 
     try {
-      mensajes = await whatsappRepository.find({ select: ['id_wpp','mensaje', 'fecha' ]});
+      mensajes = await whatsappRepository.find({ select: ['id_wpp','mensaje', 'fecha' ], relations:['user']});
     } catch (e) {
-      res.status(404).json({ message: 'Somenthing goes wrong!' });
+      res.status(404).json({ message: 'Somenthing goes wrong!', e });
     }
 
     if (mensajes.length > 0) {
@@ -22,22 +22,48 @@ export class MensajeController {
   };
 
   static getById = async (req: Request, res: Response) => {
-    const { id_correo } = req.params;
+    const { id_wpp } = req.params;
     const whatsappRepository = getRepository(Whatsapp);
     try {
-      const wpp = await whatsappRepository.findOneOrFail(id_correo);
+      const wpp = await whatsappRepository.findOneOrFail(id_wpp, { select: ['id_wpp','mensaje', 'fecha' ], relations:['user']});
       res.send(wpp);
     } catch (e) {
       res.status(404).json({ message: 'Not result' });
     }
   };
 
+  static getByUser = async (req: Request, res: Response) => {
+    const whatsappRepository = getRepository(Whatsapp);
+    let prospectos;
+
+    const { user } = req.params; // Obtener el parámetro de búsqueda desde la solicitud
+
+    try {
+          prospectos = await whatsappRepository.find({
+            where: { user: user },
+            select: ['id_wpp', 'mensaje', 'fecha'],
+            relations: ['user']
+          });
+
+    } catch (e) {
+      res.status(404).json({ message: 'Something goes wrong!' });
+      return;
+    }
+
+    if (prospectos.length > 0) {
+      res.send(prospectos);
+    } else {
+      res.status(404).json({ message: 'No results' });
+    }
+  };
+
   static new = async (req: Request, res: Response) => {
-    const { mensaje, fecha } = req.body;
+    const { mensaje, fecha, user } = req.body;
     const wpp = new Whatsapp();
 
     wpp.mensaje = mensaje;
     wpp.fecha = fecha;
+    wpp.user = user;
 
     // Validate
     const validationOpt = { validationError: { target: false, value: false } };
@@ -63,7 +89,7 @@ export class MensajeController {
   static edit = async (req: Request, res: Response) => {
     let wpp;
     const { id_wpp } = req.params;
-    const { mensaje, fecha } = req.body;
+    const { mensaje, fecha, user } = req.body;
 
     const whatsappRepository = getRepository(Whatsapp);
     // Try get user
@@ -71,6 +97,7 @@ export class MensajeController {
       wpp = await whatsappRepository.findOneOrFail(id_wpp);
       wpp.mensaje = mensaje;
       wpp.fecha = fecha;
+      wpp.user = user;
     } catch (e) {
       return res.status(404).json({ message: 'wpp not found' });
     }

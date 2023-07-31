@@ -10,21 +10,46 @@ export class PeriodoAcademicoController {
     let periodos;
 
     try {
-      periodos = await periodoRepository.find({ select: ['id_periodo', 'fecha_inicio', 'fecha_fin', 'descripcion', 'activo' ]});
+      periodos = await periodoRepository.find({ select: ['id_periodo', 'fecha_inicio', 'fecha_fin', 'descripcion', 'activo', 'estado' ]});
       res.send(periodos);
     } catch (e) {
       res.status(404).json({ message: 'Something goes wrong!' });
     }
   };
 
+  static getByActivo = async (req: Request, res: Response) => {
+    const periodoRepository = getRepository(PeriodoAcademico);
+    let periodos;
+
+    const { activo } = req.params; // Obtener el parámetro de búsqueda desde la solicitud
+
+    try {
+          periodos = await periodoRepository.find({
+            where: { activo: activo },
+            select: ['id_periodo', 'fecha_inicio', 'fecha_fin', 'descripcion', 'activo', 'estado' ],
+          });
+
+    } catch (e) {
+      res.status(404).json({ message: 'Something goes wrong!' });
+      return;
+    }
+
+    if (periodos.length > 0) {
+      res.send(periodos);
+    } else {
+      res.status(404).json({ message: 'No results' });
+    }
+  };
+
   static  new = async (req: Request, res: Response) => {
-    const { descripcion, fecha_inicio, fecha_fin, activo } = req.body;
+    const { descripcion, fecha_inicio, fecha_fin, activo, estado } = req.body;
     const periodo = new PeriodoAcademico();
 
     periodo.fecha_inicio = new Date(fecha_inicio);
     periodo.fecha_fin = new Date(fecha_fin);
     periodo.descripcion = descripcion;
     periodo.activo = activo;
+    periodo.estado = estado;
 
     const periodoRepository = getRepository(PeriodoAcademico);
 
@@ -38,7 +63,7 @@ export class PeriodoAcademicoController {
 
   static edit = async (req: Request, res: Response) => {
     const { id_periodo } = req.params;
-    const { descripcion, fecha_inicio, fecha_fin, activo } = req.body;
+    const { descripcion, fecha_inicio, fecha_fin, activo, estado } = req.body;
 
     const periodoRepository = getRepository(PeriodoAcademico);
 
@@ -57,33 +82,28 @@ export class PeriodoAcademicoController {
       periodo.fecha_inicio = new Date(fecha_inicio);
       periodo.fecha_fin = new Date(fecha_fin);
       periodo.activo = activo;
+      periodo.estado = estado;
 
       await periodoRepository.save(periodo);
       res.status(200).json({ message: 'Academic period updated' });
     } catch (e) {
-      return res.status(404).json({ message: 'Academic period not found' });
+      return res.status(404).json({ message: 'Academic period not found', e });
     }
   };
 
   static activarPeriodoAcademico = async(req: Request, res: Response) => {
       const { id } = req.params;
-  
       const periodoRepository = getRepository(PeriodoAcademico);
   
       try {
         const periodo = await periodoRepository.findOneOrFail(id);
-  
-        // Desactivar todos los demás registros
         await periodoRepository
           .createQueryBuilder()
           .update(PeriodoAcademico)
           .set({ activo: false })
           .where('id_periodo != :id', { id: periodo.id_periodo })
           .execute();
-        console.log(periodo.id_periodo);
         
-  
-        // Activar el período académico específico
         periodo.activo = true;
         await periodoRepository.save(periodo);
   
@@ -101,7 +121,7 @@ export class PeriodoAcademicoController {
       await periodoRepository.delete(id_periodo);
       res.status(200).json({ message: 'Academic period deleted' });
     } catch (e) {
-      return res.status(404).json({ message: 'Academic period not found' });
+      return res.status(404).json({ message: 'Academic period not found', e });
     }
   };
 

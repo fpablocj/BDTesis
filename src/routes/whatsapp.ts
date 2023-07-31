@@ -11,6 +11,8 @@ router.get('/', MensajeController.getAll);
 // Get one user
 router.get('/:id_wpp', MensajeController.getById);
 
+router.get('/user/:user', MensajeController.getByUser);
+
 // Create a new user
 router.post('/', MensajeController.new);
 

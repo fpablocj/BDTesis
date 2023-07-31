@@ -8,6 +8,8 @@ router.get('/', PeriodoAcademicoController.getAll);
 
 router.get('/:id_periodo', PeriodoAcademicoController.getById);
 
+router.get('/activo/:activo', PeriodoAcademicoController.getByActivo);
+
 // Create a new user
 router.post('/', PeriodoAcademicoController.new);
 

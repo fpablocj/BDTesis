@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn, ManyToOne } from "typeorm";
 import { DetalleWhatsapp } from "./DetalleWhatsapp";
+import { Users } from "./Users";
 
 @Entity({name: 'whatsapp'})
 export class Whatsapp {
@@ -11,6 +12,10 @@ export class Whatsapp {
 
   @Column({ type: "date" })
   fecha: Date;
+
+  @ManyToOne(() => Users, (user)=> user.prospecto)
+  @JoinColumn({ name: "id"})
+  user: Users;
 
   @OneToMany(() => DetalleWhatsapp, (detalle_whatsapp) => detalle_whatsapp.whatsapp)
   detalle_whatsapp: any;

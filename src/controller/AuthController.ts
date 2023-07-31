@@ -17,7 +17,7 @@ class AuthController {
     let user: Users;
 
     try {
-      user = await userRepository.findOneOrFail({ where: { username } });
+      user = await userRepository.findOneOrFail({ where: { username }, relations: ['carrera'] });
     } catch (e) {
       return res.status(400).json({ message: ' Username or password incorecct!' });
     }
@@ -29,7 +29,7 @@ class AuthController {
 
     const token = jwt.sign({ userId: user.id, username: user.username }, config.jwtSecret, { expiresIn: '1h' });
 
-    res.json({ message: 'OK', token, userId: user.id, username:user.username, name:user.name, role: user.role, carrera_asignada: user.carrera_asignada });
+    res.json({ message: 'OK', token, userId: user.id, username:user.username, name:user.name, role: user.role, carrera: user.carrera.id_carrera });
   };
 
   static changePassword = async (req: Request, res: Response) => {

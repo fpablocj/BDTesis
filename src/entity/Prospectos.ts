@@ -3,6 +3,7 @@ import { PeriodoAcademico } from "./PeriodoAcademico";
 import { DetalleCorreo } from "./DetalleCorreo";
 import { DetalleWhatsapp } from "./DetalleWhatsapp";
 import { Users } from "./Users";
+import { Carreras } from "./Carreras";
 
 @Entity({name: 'prospectos'})
 @Unique(['cedula'])
@@ -59,6 +60,10 @@ export class Prospectos {
 
   @Column({ type: "varchar", length: 300 })
   comentario: string;
+
+  @ManyToOne(() => Carreras, (carrera)=> carrera.prospecto)
+  @JoinColumn({ name: "id_carrera"})
+  carrera: Carreras;
 
   @ManyToOne(() => PeriodoAcademico, (periodo) => periodo.prospecto)
   @JoinColumn({ name: "id_periodo" })
