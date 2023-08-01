@@ -34,9 +34,6 @@ export class Prospectos {
   @Column({ type: "varchar", length: 250 })
   correo: string;
 
-  @Column({ type: "varchar", length: 70 })
-  carrera_interes: string;
-
   @Column({ type: "varchar", length: 30 })
   jornada: string;
 
