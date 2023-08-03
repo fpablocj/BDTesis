@@ -1,4 +1,4 @@
-import { Like, getRepository } from 'typeorm';
+import { In, Like, Not, getRepository } from 'typeorm';
 import { Request, Response } from 'express';
 import { validate } from 'class-validator';
 import { Prospectos } from '../entity/Prospectos';
@@ -204,6 +204,33 @@ export class ProspectoController {
       const [prospectos, totalItems] = await prospectoRepository.findAndCount({
         select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
         relations: ['user', 'periodo', 'carrera'],
+        take: parseInt(pageSize),
+        skip: (parseInt(page) - 1) * parseInt(pageSize),
+      });
+
+      if (prospectos.length > 0) {
+        const totalPages = Math.ceil(totalItems /  parseInt(pageSize));
+        res.send({ prospectos, totalItems, totalPages });
+      } else {
+        res.status(404).json({ message: 'No results' });
+      }
+    } catch (e) {
+      res.status(404).json({ message: 'Something goes wrong!' });
+    }
+  };
+
+  static getPaginadoByEstado = async (req: Request, res: Response) => {
+    const { page, pageSize } = req.params; // Obtener los parámetros de paginación desde la solicitud
+
+    const prospectoRepository = getRepository(Prospectos);
+
+    try {
+      const [prospectos, totalItems] = await prospectoRepository.findAndCount({
+        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
+        relations: ['user', 'periodo', 'carrera'],
+        where: {
+          estado: Not(In(['DESCARTADO', 'DESCARTADO DEFINITIVAMENTE', 'MATRICULADO/A'])),
+        },
         take: parseInt(pageSize),
         skip: (parseInt(page) - 1) * parseInt(pageSize),
       });

@@ -14,6 +14,8 @@ router.get('/carrera/:carrera', ProspectoController.getByCarrera);
 
 router.get('/paginados/:page/:pageSize', ProspectoController.getAllPaginado);
 
+router.get('/estado/:page/:pageSize', ProspectoController.getPaginadoByEstado);
+
 // Get one user
 router.get('/:id_prospecto', ProspectoController.getById);
 
