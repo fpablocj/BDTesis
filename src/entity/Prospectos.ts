@@ -55,7 +55,7 @@ export class Prospectos {
   @Column({ type: "varchar", length: 50 })
   fuente_registro: string;
 
-  @Column({ type: "varchar", length: 300 })
+  @Column({ type: "varchar", length: 1000, nullable:true })
   comentario: string;
 
   @ManyToOne(() => Carreras, (carrera)=> carrera.prospecto)
