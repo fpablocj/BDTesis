@@ -11,7 +11,7 @@ export class Prospectos {
   @PrimaryGeneratedColumn()
   id_prospecto: number;
 
-  @Column({ type: "varchar", width: 10 })
+  @Column({ type: "varchar", length: 10, nullable: true })
   cedula: string;
 
   @Column({ type: "varchar", length: 20 })
