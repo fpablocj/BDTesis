@@ -49,7 +49,7 @@ export class Prospectos {
   @Column({ type: "varchar", length: 50 })
   sexo: string;
 
-  @Column({ type: "varchar", length: 70 })
+  @Column({ type: "varchar", length: 70, nullable:true })
   colegio: string;
 
   @Column({ type: "varchar", length: 50 })

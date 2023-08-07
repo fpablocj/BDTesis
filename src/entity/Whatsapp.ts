@@ -13,6 +13,9 @@ export class Whatsapp {
   @Column({ type: "date" })
   fecha: Date;
 
+  @Column({ name: "hora", type: "varchar", length: 20, nullable:true })
+  hora: string;
+
   @ManyToOne(() => Users, (user)=> user.prospecto)
   @JoinColumn({ name: "id"})
   user: Users;

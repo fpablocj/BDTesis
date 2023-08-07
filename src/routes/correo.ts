@@ -11,6 +11,8 @@ router.get('/', CorreoController.getAll);
 // Get one user
 router.get('/:id_correo', CorreoController.getById);
 
+router.get('/user/:user', CorreoController.getByUser);
+
 // Create a new user
 router.post('/', CorreoController.new);
 

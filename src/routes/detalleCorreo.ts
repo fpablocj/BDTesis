@@ -11,6 +11,10 @@ router.get('/', DetalleCorreoController.getAll);
 // Get one user
 router.get('/:id_detalle', DetalleCorreoController.getById);
 
+router.get('/prospecto/:prospecto', DetalleCorreoController.getByProspecto);
+
+router.get('/correo/:correo', DetalleCorreoController.getByCorreo);
+
 // Create a new user
 router.post('/', DetalleCorreoController.new);
 

@@ -4,6 +4,7 @@ import * as bcrypt from 'bcryptjs';
 import { Prospectos } from './Prospectos';
 import { Carreras } from './Carreras';
 import { Whatsapp } from './Whatsapp';
+import { Correos } from './Correos';
 
 @Entity()
 @Unique(['username'])
@@ -41,6 +42,10 @@ export class Users {
   @OneToMany(() => Whatsapp, (whatsapp) => whatsapp.user)
   @JoinColumn({name: 'id_wpp'})
   whatsapp: Whatsapp[];
+
+  @OneToMany(() => Correos, (correo) => correo.user)
+  @JoinColumn({name: 'id_correo'})
+  correo: Correos[];
 
 
   hashPassword(): void {

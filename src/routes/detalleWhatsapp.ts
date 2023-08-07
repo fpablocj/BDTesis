@@ -11,6 +11,10 @@ router.get('/', DetalleMensajeController.getAll);
 // Get one user
 router.get('/:id_wpp', DetalleMensajeController.getById);
 
+router.get('/prospecto/:prospecto', DetalleMensajeController.getByProspecto);
+
+router.get('/mensaje/:whatsapp', DetalleMensajeController.getByWhatsapp);
+
 // Create a new user
 router.post('/', DetalleMensajeController.new);
 
