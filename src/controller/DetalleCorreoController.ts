@@ -32,6 +32,56 @@ export class DetalleCorreoController {
     }
   };
 
+  static getByProspecto = async (req: Request, res: Response) => {
+    const detalleCorreoRepository = getRepository(DetalleCorreo);
+    let detalleCorreo;
+
+    const { prospecto } = req.params; // Obtener el parámetro de búsqueda desde la solicitud
+
+    try {
+      detalleCorreo = await detalleCorreoRepository.find({
+            where: { prospecto: prospecto },
+            select: ['id_detalle'],
+            relations: ['correo', 'prospecto']
+          });
+
+    } catch (e) {
+      res.status(404).json({ message: 'Something goes wrong!' });
+      return;
+    }
+
+    if (detalleCorreo.length > 0) {
+      res.send(detalleCorreo);
+    } else {
+      res.status(404).json({ message: 'No results' });
+    }
+  };
+
+  static getByCorreo = async (req: Request, res: Response) => {
+    const detalleCorreoRepository = getRepository(DetalleCorreo);
+    let detalleCorreo;
+
+    const { correo } = req.params; // Obtener el parámetro de búsqueda desde la solicitud
+
+    try {
+      detalleCorreo = await detalleCorreoRepository.find({
+            where: { correo: correo },
+            select: ['id_detalle'],
+            relations: ['correo', 'prospecto']
+          });
+
+    } catch (e) {
+      res.status(404).json({ message: 'Something goes wrong!' });
+      return;
+    }
+
+    if (detalleCorreo.length > 0) {
+      res.send(detalleCorreo);
+    } else {
+      res.status(404).json({ message: 'No results' });
+    }
+  };
+
   static new = async (req: Request, res: Response) => {
     const { correo, prospecto } = req.body;
     const detalleCorreo = new DetalleCorreo();

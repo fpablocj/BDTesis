@@ -9,7 +9,7 @@ export class MensajeController {
     let mensajes;
 
     try {
-      mensajes = await whatsappRepository.find({ select: ['id_wpp','mensaje', 'fecha' ], relations:['user']});
+      mensajes = await whatsappRepository.find({ select: ['id_wpp','mensaje', 'fecha', 'hora' ], relations:['user']});
     } catch (e) {
       res.status(404).json({ message: 'Somenthing goes wrong!', e });
     }
@@ -25,7 +25,7 @@ export class MensajeController {
     const { id_wpp } = req.params;
     const whatsappRepository = getRepository(Whatsapp);
     try {
-      const wpp = await whatsappRepository.findOneOrFail(id_wpp, { select: ['id_wpp','mensaje', 'fecha' ], relations:['user']});
+      const wpp = await whatsappRepository.findOneOrFail(id_wpp, { select: ['id_wpp','mensaje', 'fecha', 'hora' ], relations:['user']});
       res.send(wpp);
     } catch (e) {
       res.status(404).json({ message: 'Not result' });
@@ -41,7 +41,7 @@ export class MensajeController {
     try {
           prospectos = await whatsappRepository.find({
             where: { user: user },
-            select: ['id_wpp', 'mensaje', 'fecha'],
+            select: ['id_wpp', 'mensaje', 'fecha', 'hora'],
             relations: ['user']
           });
 
@@ -58,11 +58,12 @@ export class MensajeController {
   };
 
   static new = async (req: Request, res: Response) => {
-    const { mensaje, fecha, user } = req.body;
+    const { mensaje, fecha, hora, user } = req.body;
     const wpp = new Whatsapp();
 
     wpp.mensaje = mensaje;
     wpp.fecha = fecha;
+    wpp.hora = hora;
     wpp.user = user;
 
     // Validate
@@ -89,7 +90,7 @@ export class MensajeController {
   static edit = async (req: Request, res: Response) => {
     let wpp;
     const { id_wpp } = req.params;
-    const { mensaje, fecha, user } = req.body;
+    const { mensaje, fecha, hora, user } = req.body;
 
     const whatsappRepository = getRepository(Whatsapp);
     // Try get user
@@ -97,6 +98,7 @@ export class MensajeController {
       wpp = await whatsappRepository.findOneOrFail(id_wpp);
       wpp.mensaje = mensaje;
       wpp.fecha = fecha;
+      wpp.hora = hora;
       wpp.user = user;
     } catch (e) {
       return res.status(404).json({ message: 'wpp not found' });

@@ -32,6 +32,56 @@ export class DetalleMensajeController {
     }
   };
 
+  static getByProspecto = async (req: Request, res: Response) => {
+    const detalleMensajeRepository = getRepository(DetalleWhatsapp);
+    let detalleMensajes;
+
+    const { prospecto } = req.params; // Obtener el parámetro de búsqueda desde la solicitud
+
+    try {
+      detalleMensajes = await detalleMensajeRepository.find({
+            where: { prospecto: prospecto },
+            select: ['id_wpp'],
+            relations: ['whatsapp', 'prospecto']
+          });
+
+    } catch (e) {
+      res.status(404).json({ message: 'Something goes wrong!' });
+      return;
+    }
+
+    if (detalleMensajes.length > 0) {
+      res.send(detalleMensajes);
+    } else {
+      res.status(404).json({ message: 'No results' });
+    }
+  };
+
+  static getByWhatsapp = async (req: Request, res: Response) => {
+    const detalleMensajeRepository = getRepository(DetalleWhatsapp);
+    let detalleMensajes;
+
+    const { whatsapp } = req.params; // Obtener el parámetro de búsqueda desde la solicitud
+
+    try {
+      detalleMensajes = await detalleMensajeRepository.find({
+            where: { whatsapp: whatsapp },
+            select: ['id_wpp'],
+            relations: ['whatsapp', 'prospecto']
+          });
+
+    } catch (e) {
+      res.status(404).json({ message: 'Something goes wrong!' });
+      return;
+    }
+
+    if (detalleMensajes.length > 0) {
+      res.send(detalleMensajes);
+    } else {
+      res.status(404).json({ message: 'No results' });
+    }
+  };
+
   static new = async (req: Request, res: Response) => {
     const { whatsapp, prospecto } = req.body;
     const detalleMensaje = new DetalleWhatsapp();
@@ -39,14 +89,12 @@ export class DetalleMensajeController {
     detalleMensaje.whatsapp = whatsapp;
     detalleMensaje.prospecto = prospecto;
 
-    // Validate
     const validationOpt = { validationError: { target: false, value: false } };
     const errors = await validate(detalleMensaje, validationOpt);
     if (errors.length > 0) {
       return res.status(400).json(errors);
     }
 
-    // TODO: HASH PASSWORD
 
     const detalleMensajeRepository = getRepository(DetalleWhatsapp);
     try {

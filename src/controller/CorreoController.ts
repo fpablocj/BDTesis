@@ -9,7 +9,7 @@ export class CorreoController {
     let correos;
 
     try {
-      correos = await correoRepository.find({ select: ['id_correo', 'asunto', 'mensaje', 'fecha' ] });
+      correos = await correoRepository.find({ select: ['id_correo', 'asunto', 'mensaje', 'fecha', 'hora' ], relations:['user'] });
     } catch (e) {
       res.status(404).json({ message: 'Somenthing goes wrong!' });
     }
@@ -32,13 +32,40 @@ export class CorreoController {
     }
   };
 
+  static getByUser = async (req: Request, res: Response) => {
+    const correoRepository = getRepository(Correos);
+    let correos;
+
+    const { user } = req.params; // Obtener el parámetro de búsqueda desde la solicitud
+
+    try {
+          correos = await correoRepository.find({
+            where: { user: user },
+            select: ['id_correo', 'asunto', 'mensaje', 'fecha', 'hora'],
+            relations: ['user']
+          });
+
+    } catch (e) {
+      res.status(404).json({ message: 'Something goes wrong!' });
+      return;
+    }
+
+    if (correos.length > 0) {
+      res.send(correos);
+    } else {
+      res.status(404).json({ message: 'No results' });
+    }
+  };
+
   static new = async (req: Request, res: Response) => {
-    const { asunto, mensaje, fecha } = req.body;
+    const { asunto, mensaje, fecha, hora, user } = req.body;
     const correo = new Correos();
 
     correo.asunto = asunto;
     correo.mensaje = mensaje;
     correo.fecha = fecha;
+    correo.hora = hora;
+    correo.user = user;
 
     // Validate
     const validationOpt = { validationError: { target: false, value: false } };
@@ -64,7 +91,7 @@ export class CorreoController {
   static edit = async (req: Request, res: Response) => {
     let correo;
     const { id_correo } = req.params;
-    const { asunto, mensaje, fecha } = req.body;
+    const { asunto, mensaje, fecha, hora, user } = req.body;
 
     const correoRepository = getRepository(Correos);
     // Try get user
@@ -73,6 +100,8 @@ export class CorreoController {
       correo.asunto = asunto;
       correo.mensaje = mensaje;
       correo.fecha = fecha;
+      correo.hora = hora;
+      correo.user = user;
     } catch (e) {
       return res.status(404).json({ message: 'correo not found' });
     }
