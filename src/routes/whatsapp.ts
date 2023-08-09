@@ -6,20 +6,20 @@ import { Router } from 'express';
 const router = Router();
 
 // Get all users
-router.get('/', MensajeController.getAll);
+router.get('/',[checkJwt], MensajeController.getAll);
 
 // Get one user
-router.get('/:id_wpp', MensajeController.getById);
+router.get('/:id_wpp', [checkJwt],MensajeController.getById);
 
-router.get('/user/:user', MensajeController.getByUser);
+router.get('/user/:user',[checkJwt], MensajeController.getByUser);
 
 // Create a new user
-router.post('/', MensajeController.new);
+router.post('/', [checkJwt],MensajeController.new);
 
 // Edit user
 router.patch('/:id_wpp', [checkJwt, checkRole(['ADMIN'])], MensajeController.edit);
 
 // Delete
-router.delete('/:id_wpp', MensajeController.delete);
+router.delete('/:id_wpp',[checkJwt], MensajeController.delete);
 
 export default router;

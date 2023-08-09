@@ -9,19 +9,19 @@ const router = Router();
 router.get('/', DetalleCorreoController.getAll);
 
 // Get one user
-router.get('/:id_detalle', DetalleCorreoController.getById);
+router.get('/:id_detalle', [checkJwt], DetalleCorreoController.getById);
 
-router.get('/prospecto/:prospecto', DetalleCorreoController.getByProspecto);
+router.get('/prospecto/:prospecto',[checkJwt], DetalleCorreoController.getByProspecto);
 
-router.get('/correo/:correo', DetalleCorreoController.getByCorreo);
+router.get('/correo/:correo',[checkJwt], DetalleCorreoController.getByCorreo);
 
 // Create a new user
-router.post('/', DetalleCorreoController.new);
+router.post('/',[checkJwt], DetalleCorreoController.new);
 
 // Edit user
 router.patch('/:id_detalle', [checkJwt, checkRole(['ADMIN'])], DetalleCorreoController.edit);
 
 // Delete
-router.delete('/:id_detalle', DetalleCorreoController.delete);
+router.delete('/:id_detalle',[checkJwt], DetalleCorreoController.delete);
 
 export default router;

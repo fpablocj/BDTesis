@@ -6,12 +6,12 @@ import { Router } from 'express';
 const router = Router();
 
 // Get all users
-router.get('/', CorreoController.getAll);
+router.get('/', [checkJwt], CorreoController.getAll);
 
 // Get one user
-router.get('/:id_correo', CorreoController.getById);
+router.get('/:id_correo', [checkJwt], CorreoController.getById);
 
-router.get('/user/:user', CorreoController.getByUser);
+router.get('/user/:user', [checkJwt], CorreoController.getByUser);
 
 // Create a new user
 router.post('/', CorreoController.new);
@@ -20,6 +20,6 @@ router.post('/', CorreoController.new);
 router.patch('/:id_correo', [checkJwt, checkRole(['admin'])], CorreoController.edit);
 
 // Delete
-router.delete('/:id_correo', CorreoController.delete);
+router.delete('/:id_correo', [checkJwt], CorreoController.delete);
 
 export default router;

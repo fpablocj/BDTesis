@@ -6,18 +6,18 @@ import { Router } from 'express';
 const router = Router();
 
 // Get all users
-router.get('/', UserController.getAll);
+router.get('/',[checkJwt], UserController.getAll);
 
 // Get one user
-router.get('/:id', UserController.getById);
+router.get('/:id', [checkJwt],UserController.getById);
 
 // Create a new user
-router.post('/', UserController.new);
+router.post('/',[checkJwt], UserController.new);
 
 // Edit user
-router.patch('/:id', UserController.edit);
+router.patch('/:id',[checkJwt], UserController.edit);
 
 // Delete
-router.delete('/:id', UserController.delete);
+router.delete('/:id',[checkJwt], UserController.delete);
 
 export default router;
