@@ -17,7 +17,7 @@ router.get('/user/:user',[checkJwt], MensajeController.getByUser);
 router.post('/', [checkJwt],MensajeController.new);
 
 // Edit user
-router.patch('/:id_wpp', [checkJwt, checkRole(['ADMIN'])], MensajeController.edit);
+router.patch('/:id_wpp', [checkJwt], MensajeController.edit);
 
 // Delete
 router.delete('/:id_wpp',[checkJwt], MensajeController.delete);

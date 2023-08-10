@@ -17,7 +17,7 @@ router.get('/user/:user', [checkJwt], CorreoController.getByUser);
 router.post('/', CorreoController.new);
 
 // Edit user
-router.patch('/:id_correo', [checkJwt, checkRole(['admin'])], CorreoController.edit);
+router.patch('/:id_correo', [checkJwt], CorreoController.edit);
 
 // Delete
 router.delete('/:id_correo', [checkJwt], CorreoController.delete);
