@@ -71,6 +71,31 @@ export class ProspectoController {
     }
   };
 
+  static getByCedula = async (req: Request, res: Response) => {
+    const prospectoRepository = getRepository(Prospectos);
+    let prospectos;
+
+    const { cedula } = req.params; // Obtener el parámetro de búsqueda desde la solicitud
+
+    try {
+          prospectos = await prospectoRepository.find({
+            where: { cedula: cedula },
+            select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
+            relations: ['user', 'periodo', 'carrera']
+          });
+
+    } catch (e) {
+      res.status(404).json({ message: 'Something goes wrong!' });
+      return;
+    }
+
+    if (prospectos.length > 0) {
+      res.send(prospectos);
+    } else {
+      res.status(404).json({ message: 'No results' });
+    }
+  };
+
   static getById = async (req: Request, res: Response) => {
     const { id_prospecto } = req.params;
     const prospectoRepository = getRepository(Prospectos);

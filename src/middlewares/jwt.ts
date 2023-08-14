@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 import config from '../config/config';
+import { log } from 'console';
 
 export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
   const token = <string>req.headers['authorization'];
@@ -14,7 +15,7 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
 
   const { userId, username } = jwtPayload;
 
-  const newToken = jwt.sign({ userId, username }, config.jwtSecret, { expiresIn: '30m' });
+  const newToken = jwt.sign({ userId, username }, config.jwtSecret, { expiresIn: '120m' });
   res.setHeader('token', newToken);
   // Call next
   next();

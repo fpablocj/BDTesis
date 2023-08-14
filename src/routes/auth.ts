@@ -10,4 +10,6 @@ router.post('/login', AuthController.login);
 // Change password
 router.post('/change-password', AuthController.changePassword);
 
+router.post('/refresh-token', AuthController.refreshToken);
+
 export default router;

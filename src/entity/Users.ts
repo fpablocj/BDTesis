@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Unique, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
-import { MinLength, IsNotEmpty, IsEmail } from 'class-validator';
+import { MinLength, IsNotEmpty, IsEmail, IsOptional } from 'class-validator';
 import * as bcrypt from 'bcryptjs';
 import { Prospectos } from './Prospectos';
 import { Carreras } from './Carreras';
@@ -26,6 +26,11 @@ export class Users {
   @MinLength(6)
   @IsNotEmpty()
   password: string;
+
+  @Column()
+  @IsOptional()
+  @IsNotEmpty()
+  refreshToken: string;
 
   @Column()
   @IsNotEmpty()

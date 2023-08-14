@@ -10,9 +10,11 @@ router.get('/',[checkJwt], ProspectoController.getAll);
 
 router.get('/carrera/:carrera/paginados/:page/:pageSize',[checkJwt], ProspectoController.getByCarreraPaginado);
 
-router.get('/carrera-estado/:carrera/paginados/:page/:pageSize',[checkJwt], ProspectoController.getByCarreraPaginadoAndEstado);
+router.get('/carrera-estado/:carrera/:page/:pageSize',[checkJwt], ProspectoController.getByCarreraPaginadoAndEstado);
 
 router.get('/carrera/:carrera',[checkJwt], ProspectoController.getByCarrera);
+
+router.get('/cedula/:cedula',[checkJwt], ProspectoController.getByCedula);
 
 router.get('/paginados/:page/:pageSize',[checkJwt], ProspectoController.getAllPaginado);
 
