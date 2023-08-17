@@ -7,6 +7,7 @@ import { Carreras } from "./Carreras";
 
 @Entity({name: 'prospectos'})
 @Unique(['cedula'])
+@Unique(['nombres'])
 export class Prospectos {
   @PrimaryGeneratedColumn()
   id_prospecto: number;
