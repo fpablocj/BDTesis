@@ -12,13 +12,13 @@ router.get('/carrera/:carrera/:periodo',[checkJwt], ProspectoController.getByCar
 
 //--------------CONTEO------------------------------------------------------------
 
-router.get('/count/:periodo', ProspectoController.getCount);
+router.get('/count/:periodo', [checkJwt], ProspectoController.getCount);
 
-router.get('/count/estado/:periodo', ProspectoController.getCountByEstado);
+router.get('/count/estado/:periodo', [checkJwt], ProspectoController.getCountByEstado);
 
-router.get('/count/carrera/:carrera/:periodo', ProspectoController.getCountByCarrera);
+router.get('/count/carrera/:carrera/:periodo', [checkJwt], ProspectoController.getCountByCarrera);
 
-router.get('/count/carrera-estado/:carrera/:periodo', ProspectoController.getCountByCarreraAndEstado);
+router.get('/count/carrera-estado/:carrera/:periodo', [checkJwt], ProspectoController.getCountByCarreraAndEstado);
 
 //-------------PAGINADO---------------------------------------------------------------------------
 
