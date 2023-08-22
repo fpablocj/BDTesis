@@ -6,10 +6,14 @@ import { Prospectos } from '../entity/Prospectos';
 export class ProspectoController {
   static getAll = async (req: Request, res: Response) => {
     const prospectoRepository = getRepository(Prospectos);
+    const { periodo } = req.params;
     let prospectos;
 
     try {
-      prospectos = await prospectoRepository.find({ select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'], relations: ['user', 'periodo', 'carrera']  });
+      prospectos = await prospectoRepository.find({ 
+        where: {periodo: periodo},
+        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'], 
+        relations: ['user', 'periodo', 'carrera']  });
     } catch (e) {
       res.status(404).json({ message: 'Somenthing goes wrong!' });
     }
@@ -20,15 +24,84 @@ export class ProspectoController {
       res.status(404).json({ message: 'Not result' });
     }
   };
+  static getCount = async (req: Request, res: Response) => {
+    const prospectoRepository = getRepository(Prospectos);
+    const { periodo } = req.params;
+
+    try {
+      const filtro: any = {
+        periodo:periodo
+      };
+
+      const totalProspectos = await prospectoRepository.count(filtro);
+      res.send({ totalProspectos });
+    } catch (e) {
+      res.status(500).json({ message: 'Something went wrong!' });
+    }
+};
+
+  static getCountByEstado = async (req: Request, res: Response) => {
+    const prospectoRepository = getRepository(Prospectos);
+    const { periodo } = req.params;
+
+    try {
+      const filtro: any = {
+        periodo: periodo,
+        estado: Not(In(['DESCARTADO', 'DESCARTADO DEFINITIVAMENTE', 'MATRICULADO/A']))
+      };
+
+      const totalProspectos = await prospectoRepository.count(filtro);
+      res.send({ totalProspectos });
+    } catch (e) {
+      res.status(500).json({ message: 'Something went wrong!' });
+    }
+  };
+
+  static getCountByCarrera = async (req: Request, res: Response) => {
+    const prospectoRepository = getRepository(Prospectos);
+    const { carrera, periodo } = req.params;
+
+    try {
+      const filtro: any = {
+        carrera: carrera,
+        periodo:periodo
+      };
+
+      const totalProspectos = await prospectoRepository.count(filtro);
+      res.send({ totalProspectos });
+    } catch (e) {
+      res.status(500).json({ message: 'Something went wrong!' });
+    }
+};
+
+static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
+  const prospectoRepository = getRepository(Prospectos);
+  const { carrera, periodo } = req.params;
+
+  try {
+    const filtro: any = {
+      carrera: carrera,
+      periodo:periodo,
+      estado: Not(In(['DESCARTADO', 'DESCARTADO DEFINITIVAMENTE', 'MATRICULADO/A']))
+    };
+
+    const totalProspectos = await prospectoRepository.count(filtro);
+    res.send({ totalProspectos });
+  } catch (e) {
+    res.status(500).json({ message: 'Something went wrong!' });
+  }
+};
+
+
 
   static getByCarreraPaginado = async (req: Request, res: Response) => {
-    const { carrera, page, pageSize } = req.params; // Obtener los parámetros de búsqueda desde la solicitud
+    const { periodo, carrera, page, pageSize } = req.params; // Obtener los parámetros de búsqueda desde la solicitud
 
     const prospectoRepository = getRepository(Prospectos);
 
     try {
       const [prospectos, totalItems] = await prospectoRepository.findAndCount({
-        where: { carrera: carrera },
+        where: { carrera: carrera, periodo:periodo },
         select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
         relations: ['user', 'periodo', 'carrera'],
         take: parseInt(pageSize),
@@ -50,11 +123,11 @@ export class ProspectoController {
     const prospectoRepository = getRepository(Prospectos);
     let prospectos;
 
-    const { carrera } = req.params; // Obtener el parámetro de búsqueda desde la solicitud
+    const { carrera, periodo } = req.params; // Obtener el parámetro de búsqueda desde la solicitud
 
     try {
           prospectos = await prospectoRepository.find({
-            where: { carrera: carrera },
+            where: { carrera: carrera, periodo:periodo },
             select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
             relations: ['user', 'periodo', 'carrera']
           });
@@ -221,7 +294,7 @@ export class ProspectoController {
 
 
   static getAllPaginado = async (req: Request, res: Response) => {
-    const { page, pageSize } = req.params; // Obtener los parámetros de paginación desde la solicitud
+    const { periodo, page, pageSize } = req.params; // Obtener los parámetros de paginación desde la solicitud
 
     const prospectoRepository = getRepository(Prospectos);
 
@@ -229,6 +302,7 @@ export class ProspectoController {
       const [prospectos, totalItems] = await prospectoRepository.findAndCount({
         select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
         relations: ['user', 'periodo', 'carrera'],
+        where: {periodo: periodo},
         take: parseInt(pageSize),
         skip: (parseInt(page) - 1) * parseInt(pageSize),
       });
@@ -245,7 +319,7 @@ export class ProspectoController {
   };
 
   static getPaginadoByEstado = async (req: Request, res: Response) => {
-    const { page, pageSize } = req.params; // Obtener los parámetros de paginación desde la solicitud
+    const { periodo, page, pageSize } = req.params; // Obtener los parámetros de paginación desde la solicitud
 
     const prospectoRepository = getRepository(Prospectos);
 
@@ -255,6 +329,7 @@ export class ProspectoController {
         relations: ['user', 'periodo', 'carrera'],
         where: {
           estado: Not(In(['DESCARTADO', 'DESCARTADO DEFINITIVAMENTE', 'MATRICULADO/A'])),
+          periodo: periodo
         },
         take: parseInt(pageSize),
         skip: (parseInt(page) - 1) * parseInt(pageSize),
@@ -271,7 +346,7 @@ export class ProspectoController {
     }
   };
   static getByCarreraPaginadoAndEstado = async (req: Request, res: Response) => {
-    const { carrera, page, pageSize } = req.params; // Obtener los parámetros de búsqueda desde la solicitud
+    const { periodo, carrera, page, pageSize } = req.params; // Obtener los parámetros de búsqueda desde la solicitud
 
     const prospectoRepository = getRepository(Prospectos);
 
@@ -280,33 +355,10 @@ export class ProspectoController {
         select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
         relations: ['user', 'periodo', 'carrera'],
         where: {
-          estado: Not(In(['DESCARTADO', 'DESCARTADO DEFINITIVAMENTE', 'MATRICULADO/A'])), carrera: carrera
+          estado: Not(In(['DESCARTADO', 'DESCARTADO DEFINITIVAMENTE', 'MATRICULADO/A'])), 
+          carrera: carrera,
+          periodo: periodo
         },
-        take: parseInt(pageSize),
-        skip: (parseInt(page) - 1) * parseInt(pageSize),
-      });
-
-      if (prospectos.length > 0) {
-        const totalPages = Math.ceil(totalItems / parseInt(pageSize)); // Convertir el valor de pageSize a número
-        res.send({ prospectos, totalItems, totalPages });
-      } else {
-        res.status(404).json({ message: 'No results' });
-      }
-    } catch (e) {
-      res.status(404).json({ message: 'Something goes wrong!' });
-    }
-  };
-
-  static getPaginadoByPeriodo = async (req: Request, res: Response) => {
-    const { periodo, page, pageSize } = req.params; // Obtener los parámetros de búsqueda desde la solicitud
-
-    const prospectoRepository = getRepository(Prospectos);
-
-    try {
-      const [prospectos, totalItems] = await prospectoRepository.findAndCount({
-        where: { periodo: periodo },
-        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
-        relations: ['user', 'periodo', 'carrera'],
         take: parseInt(pageSize),
         skip: (parseInt(page) - 1) * parseInt(pageSize),
       });

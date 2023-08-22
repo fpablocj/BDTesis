@@ -6,24 +6,35 @@ import { Router } from 'express';
 const router = Router();
 
 // Get all users
-router.get('/',[checkJwt], ProspectoController.getAll);
+router.get('/:periodo',[checkJwt], ProspectoController.getAll);
 
-router.get('/carrera/:carrera/paginados/:page/:pageSize',[checkJwt], ProspectoController.getByCarreraPaginado);
+router.get('/carrera/:carrera/:periodo',[checkJwt], ProspectoController.getByCarrera);
 
-router.get('/carrera-estado/:carrera/:page/:pageSize',[checkJwt], ProspectoController.getByCarreraPaginadoAndEstado);
+//--------------CONTEO------------------------------------------------------------
 
-router.get('/carrera/:carrera',[checkJwt], ProspectoController.getByCarrera);
+router.get('/count/:periodo', ProspectoController.getCount);
 
-router.get('/cedula/:cedula',[checkJwt], ProspectoController.getByCedula);
+router.get('/count/estado/:periodo', ProspectoController.getCountByEstado);
 
-router.get('/paginados/:page/:pageSize',[checkJwt], ProspectoController.getAllPaginado);
+router.get('/count/carrera/:carrera/:periodo', ProspectoController.getCountByCarrera);
 
-router.get('/estado/:page/:pageSize',[checkJwt], ProspectoController.getPaginadoByEstado);
+router.get('/count/carrera-estado/:carrera/:periodo', ProspectoController.getCountByCarreraAndEstado);
 
-router.get('/periodo/:page/:pageSize',[checkJwt], ProspectoController.getPaginadoByPeriodo);
+//-------------PAGINADO---------------------------------------------------------------------------
+
+router.get('/carrera/:carrera/paginados/:page/:pageSize/:periodo',[checkJwt], ProspectoController.getByCarreraPaginado);
+
+router.get('/carrera-estado/:carrera/:page/:pageSize/:periodo',[checkJwt], ProspectoController.getByCarreraPaginadoAndEstado);
+
+router.get('/paginados/:page/:pageSize/:periodo',[checkJwt], ProspectoController.getAllPaginado);
+
+router.get('/estado/:page/:pageSize/:periodo',[checkJwt], ProspectoController.getPaginadoByEstado);
+
 
 // Get one user
 router.get('/:id_prospecto',[checkJwt], ProspectoController.getById);
+
+router.get('/cedula/:cedula',[checkJwt], ProspectoController.getByCedula);
 
 // Create a new user
 router.post('/', [checkJwt],ProspectoController.new);
