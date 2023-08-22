@@ -6,7 +6,7 @@ import { Router } from 'express';
 const router = Router();
 
 // Get all users
-router.get('/:periodo',[checkJwt], ProspectoController.getAll);
+router.get('/all/:periodo',[checkJwt], ProspectoController.getAll);
 
 router.get('/carrera/:carrera/:periodo',[checkJwt], ProspectoController.getByCarrera);
 
