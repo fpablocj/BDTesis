@@ -8,6 +8,7 @@ import { Carreras } from "./Carreras";
 @Entity({name: 'prospectos'})
 @Unique(['cedula'])
 @Unique(['nombres'])
+//@Unique(['correo'])
 export class Prospectos {
   @PrimaryGeneratedColumn()
   id_prospecto: number;
@@ -26,13 +27,13 @@ export class Prospectos {
 
 
   
-  @Column({ type: "varchar", length: 12 })
+  @Column({ type: "varchar", length: 12, nullable: true })
   celular: string;
 
   @Column({ type: "date" })
   fecha_registro: Date;
 
-  @Column({ type: "varchar", length: 250 })
+  @Column({ type: "varchar", length: 250, nullable: true })
   correo: string;
 
   @Column({ type: "varchar", length: 30 })
