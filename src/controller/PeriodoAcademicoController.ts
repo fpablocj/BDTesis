@@ -87,7 +87,7 @@ export class PeriodoAcademicoController {
       await periodoRepository.save(periodo);
       res.status(200).json({ message: 'Academic period updated' });
     } catch (e) {
-      return res.status(404).json({ message: 'Academic period not found', e });
+      return res.send({ message: 'Academic period not found', e });
     }
   };
 
@@ -109,7 +109,7 @@ export class PeriodoAcademicoController {
   
         res.status(200).json({ message: 'Academic period activated' });
       } catch (e) {
-        return res.status(404).json({ message: 'Academic period not found', e });
+        return res.send({ message: 'Academic period not found', e });
       }
   };
 
@@ -121,7 +121,7 @@ export class PeriodoAcademicoController {
       await periodoRepository.delete(id_periodo);
       res.status(200).json({ message: 'Academic period deleted' });
     } catch (e) {
-      return res.status(404).json({ message: 'Academic period not found', e });
+      return res.send({ message: 'Academic period not found', e });
     }
   };
 
@@ -132,7 +132,7 @@ export class PeriodoAcademicoController {
       const periodo = await periodoRepository.findOneOrFail(id_periodo);
       res.send(periodo);
     } catch (e) {
-      res.status(404).json({ message: 'Not result' });
+      res.send({ message: 'Not result' });
     }
   };
 }

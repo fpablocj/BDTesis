@@ -17,7 +17,7 @@ export class DetalleMensajeController {
     if (detalleMensajes.length > 0) {
       res.send(detalleMensajes);
     } else {
-      res.status(404).json({ message: 'Not result' });
+      res.send({ message: 'Not result' });
     }
   };
 
@@ -28,7 +28,7 @@ export class DetalleMensajeController {
       const detalleMensaje = await detalleMensajeRepository.findOneOrFail(id_wpp);
       res.send(detalleMensaje);
     } catch (e) {
-      res.status(404).json({ message: 'Not result' });
+      res.send({ message: 'Not result', e });
     }
   };
 
@@ -53,7 +53,7 @@ export class DetalleMensajeController {
     if (detalleMensajes.length > 0) {
       res.send(detalleMensajes);
     } else {
-      res.status(404).json({ message: 'No results' });
+      res.send({ message: 'No results' });
     }
   };
 
@@ -78,7 +78,7 @@ export class DetalleMensajeController {
     if (detalleMensajes.length > 0) {
       res.send(detalleMensajes);
     } else {
-      res.status(404).json({ message: 'No results' });
+      res.send({ message: 'No results' });
     }
   };
 
@@ -119,7 +119,7 @@ export class DetalleMensajeController {
       detalleMensaje.whatsapp = whatsapp;
       detalleMensaje.prospecto = prospecto;
     } catch (e) {
-      return res.status(404).json({ message: 'correo not found' });
+      return res.send({ message: 'correo not found', e });
     }
     const validationOpt = { validationError: { target: false, value: false } };
     const errors = await validate(detalleMensaje, validationOpt);
@@ -146,7 +146,7 @@ export class DetalleMensajeController {
     try {
       detalleMensaje = await detalleMensajeRepository.findOneOrFail(id_wpp);
     } catch (e) {
-      return res.status(404).json({ message: 'correo not found' });
+      return res.send({ message: 'correo not found', e });
     }
 
     // Remove user

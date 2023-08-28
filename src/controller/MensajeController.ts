@@ -17,7 +17,7 @@ export class MensajeController {
     if (mensajes.length > 0) {
       res.send(mensajes);
     } else {
-      res.status(404).json({ message: 'Not result' });
+      res.send({ message: 'Not result' });
     }
   };
 
@@ -28,7 +28,7 @@ export class MensajeController {
       const wpp = await whatsappRepository.findOneOrFail(id_wpp, { select: ['id_wpp','mensaje', 'fecha', 'hora' ], relations:['user']});
       res.send(wpp);
     } catch (e) {
-      res.status(404).json({ message: 'Not result' });
+      res.send({ message: 'Not result' });
     }
   };
 
@@ -53,7 +53,7 @@ export class MensajeController {
     if (prospectos.length > 0) {
       res.send(prospectos);
     } else {
-      res.status(404).json({ message: 'No results' });
+      res.send({ message: 'No results' });
     }
   };
 
@@ -101,7 +101,7 @@ export class MensajeController {
       wpp.hora = hora;
       wpp.user = user;
     } catch (e) {
-      return res.status(404).json({ message: 'wpp not found' });
+      return res.send({ message: 'wpp not found', e });
     }
     const validationOpt = { validationError: { target: false, value: false } };
     const errors = await validate(wpp, validationOpt);
@@ -128,7 +128,7 @@ export class MensajeController {
     try {
       wpp = await whatsappRepository.findOneOrFail(id_wpp);
     } catch (e) {
-      return res.status(404).json({ message: 'wpp not found' });
+      return res.send({ message: 'wpp not found', e });
     }
 
     // Remove user

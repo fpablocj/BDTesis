@@ -17,7 +17,7 @@ export class CorreoController {
     if (correos.length > 0) {
       res.send(correos);
     } else {
-      res.status(404).json({ message: 'Not result' });
+      res.send({ message: 'Not result' });
     }
   };
 
@@ -53,7 +53,7 @@ export class CorreoController {
     if (correos.length > 0) {
       res.send(correos);
     } else {
-      res.status(404).json({ message: 'No results' });
+      res.send({ message: 'No results' });
     }
   };
 
@@ -103,7 +103,7 @@ export class CorreoController {
       correo.hora = hora;
       correo.user = user;
     } catch (e) {
-      return res.status(404).json({ message: 'correo not found' });
+      return res.send({ message: 'correo not found' });
     }
     const validationOpt = { validationError: { target: false, value: false } };
     const errors = await validate(correo, validationOpt);
@@ -130,7 +130,7 @@ export class CorreoController {
     try {
       correo = await correoRepository.findOneOrFail(id_correo);
     } catch (e) {
-      return res.status(404).json({ message: 'correo not found' });
+      return res.send({ message: 'correo not found' });
     }
 
     // Remove user

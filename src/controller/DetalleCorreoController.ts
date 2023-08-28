@@ -17,7 +17,7 @@ export class DetalleCorreoController {
     if (detalleCorreos.length > 0) {
       res.send(detalleCorreos);
     } else {
-      res.status(404).json({ message: 'Not result' });
+      res.send({ message: 'Not result' });
     }
   };
 
@@ -28,7 +28,7 @@ export class DetalleCorreoController {
       const detalleCorreo = await detalleCorreoRepository.findOneOrFail(id_detalle);
       res.send(detalleCorreo);
     } catch (e) {
-      res.status(404).json({ message: 'Not result' });
+      res.send({ message: 'Not result', e });
     }
   };
 
@@ -53,7 +53,7 @@ export class DetalleCorreoController {
     if (detalleCorreo.length > 0) {
       res.send(detalleCorreo);
     } else {
-      res.status(404).json({ message: 'No results' });
+      res.send({ message: 'No results' });
     }
   };
 
@@ -78,7 +78,7 @@ export class DetalleCorreoController {
     if (detalleCorreo.length > 0) {
       res.send(detalleCorreo);
     } else {
-      res.status(404).json({ message: 'No results' });
+      res.send({ message: 'No results' });
     }
   };
 
@@ -121,7 +121,7 @@ export class DetalleCorreoController {
       detalleCorreo.correo = correo;
       detalleCorreo.prospecto = prospecto;
     } catch (e) {
-      return res.status(404).json({ message: 'correo not found' });
+      return res.send({ message: 'correo not found', e });
     }
     const validationOpt = { validationError: { target: false, value: false } };
     const errors = await validate(detalleCorreo, validationOpt);
@@ -148,12 +148,12 @@ export class DetalleCorreoController {
     try {
       detalleCorreo = await detalleCorreoRepository.findOneOrFail(id_detalle);
     } catch (e) {
-      return res.status(404).json({ message: 'correo not found' });
+      return res.send({ message: 'correo not found', e });
     }
 
     // Remove user
     detalleCorreoRepository.delete(id_detalle);
-    res.status(201).json({ message: ' correo deleted' });
+    res.status(201).json({ message: 'correo deleted' });
   };
 }
 

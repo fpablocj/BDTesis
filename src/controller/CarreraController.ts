@@ -17,7 +17,7 @@ export class CarreraController {
     if (carreras.length > 0) {
       res.send(carreras);
     } else {
-      res.status(404).json({ message: 'Not result' });
+      res.send({ message: 'Not result' });
     }
   };
 
@@ -28,7 +28,7 @@ export class CarreraController {
       const carrera = await carreraRepository.findOneOrFail(id_carrera);
       res.send(carrera);
     } catch (e) {
-      res.status(404).json({ message: 'Not result' });
+      res.send({ message: 'Not result' });
     }
   };
 
@@ -52,7 +52,7 @@ export class CarreraController {
     if (carreras.length > 0) {
       res.send(carreras);
     } else {
-      res.status(404).json({ message: 'No results' });
+      res.send({ message: 'No results' });
     }
   };
 
@@ -98,7 +98,7 @@ export class CarreraController {
         carrera.descripcion = descripcion;
         carrera.campo_estudio = campo_estudio;
     } catch (e) {
-      return res.status(404).json({ message: 'carrera not found' });
+      return res.send({ message: 'carrera not found' });
     }
     const validationOpt = { validationError: { target: false, value: false } };
     const errors = await validate(carrera, validationOpt);
@@ -125,7 +125,7 @@ export class CarreraController {
     try {
         carrera = await carreraRepository.findOneOrFail(id_carrera);
     } catch (e) {
-      return res.status(404).json({ message: 'carrera not found' });
+      return res.send({ message: 'carrera not found' });
     }
     carreraRepository.delete(id_carrera);
     res.status(201).json({ message: ' carrera deleted' });

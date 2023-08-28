@@ -17,7 +17,7 @@ export class UserController {
     if (users.length > 0) {
       res.send(users);
     } else {
-      res.status(404).json({ message: 'Not result' });
+      res.send({ message: 'Not result' });
     }
   };
 
@@ -28,7 +28,7 @@ export class UserController {
       const user = await userRepository.findOneOrFail(id, {select:['name', 'username', 'role', 'password'], relations:['carrera']});
       res.send(user);
     } catch (e) {
-      res.status(404).json({ message: 'Not result', e });
+      res.send({ message: 'Not result', e });
     }
   };
 
@@ -76,7 +76,7 @@ export class UserController {
       user.role = role;
       user.carrera = carrera;
     } catch (e) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.send({ message: 'User not found' });
     }
     const validationOpt = { validationError: { target: false, value: false } };
     const errors = await validate(user, validationOpt);
@@ -102,7 +102,7 @@ export class UserController {
     try {
       user = await userRepository.findOneOrFail(id);
     } catch (e) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.send({ message: 'User not found' });
     }
 
     userRepository.delete(id);

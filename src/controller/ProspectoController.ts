@@ -21,7 +21,7 @@ export class ProspectoController {
     if (prospectos.length > 0) {
       res.send(prospectos);
     } else {
-      res.status(404).json({ message: 'Not result' });
+      res.send({ message: 'Not result' });
     }
   };
   static getCount = async (req: Request, res: Response) => {
@@ -112,7 +112,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
         const totalPages = Math.ceil(totalItems / parseInt(pageSize)); // Convertir el valor de pageSize a número
         res.send({ prospectos, totalItems, totalPages });
       } else {
-        res.status(404).json({ message: 'No results' });
+        res.send({ message: 'No results' });
       }
     } catch (e) {
       res.status(404).json({ message: 'Something goes wrong!' });
@@ -140,7 +140,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
     if (prospectos.length > 0) {
       res.send(prospectos);
     } else {
-      res.status(404).json({ message: 'No results' });
+      res.send({ message: 'No results' });
     }
   };
 
@@ -165,7 +165,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
     if (prospectos.length > 0) {
       res.send(prospectos);
     } else {
-      res.status(404).json({ message: 'No results' });
+      res.send({ message: 'No results' });
     }
   };
 
@@ -176,7 +176,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
       const prospecto = await prospectoRepository.findOneOrFail(id_prospecto, { select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo','jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'], relations: ['user', 'periodo', 'carrera']  });
       res.send(prospecto);
     } catch (e) {
-      res.status(404).json({ message: 'Not result' });
+      res.send({ message: 'Not result', e });
     }
   };
 
@@ -252,7 +252,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
       prospecto.user = user;
       prospecto.periodo = periodo;
     } catch (e) {
-      return res.status(404).json({ message: 'Prospecto not found' });
+      return res.send({ message: 'Prospecto not found', e });
     }
     const validationOpt = { validationError: { target: false, value: false } };
     const errors = await validate(prospecto, validationOpt);
@@ -279,7 +279,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
     try {
       prospecto = await prospectoRepository.findOneOrFail(id_prospecto);
     } catch (e) {
-      return res.status(404).json({ message: 'Prospecto not found' });
+      return res.send({ message: 'Prospecto not found', e });
     }
 
     // Remove user
@@ -311,7 +311,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
         const totalPages = Math.ceil(totalItems /  parseInt(pageSize));
         res.send({ prospectos, totalItems, totalPages });
       } else {
-        res.status(404).json({ message: 'No results' });
+        res.send({ message: 'No results' });
       }
     } catch (e) {
       res.status(404).json({ message: 'Something goes wrong!' });
@@ -339,7 +339,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
         const totalPages = Math.ceil(totalItems /  parseInt(pageSize));
         res.send({ prospectos, totalItems, totalPages });
       } else {
-        res.status(404).json({ message: 'No results' });
+        res.send({ message: 'No results' });
       }
     } catch (e) {
       res.status(404).json({ message: 'Something goes wrong!' });
@@ -367,7 +367,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
         const totalPages = Math.ceil(totalItems / parseInt(pageSize)); // Convertir el valor de pageSize a número
         res.send({ prospectos, totalItems, totalPages });
       } else {
-        res.status(404).json({ message: 'No results' });
+        res.send({ message: 'No results' });
       }
     } catch (e) {
       res.status(404).json({ message: 'Something goes wrong!' });
