@@ -375,6 +375,31 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
       res.status(404).json({ message: 'Something goes wrong!' });
     }
   };
+
+  static getByNombre = async (req: Request, res: Response) => {
+    const prospectoRepository = getRepository(Prospectos);
+    let prospectos;
+
+    const { nombres } = req.params; // Obtener el parámetro de búsqueda desde la solicitud
+
+    try {
+          prospectos = await prospectoRepository.find({
+            where: { nombres: nombres },
+            select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'sede', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
+            relations: ['user', 'periodo', 'carrera']
+          });
+
+    } catch (e) {
+      res.status(404).json({ message: 'Something goes wrong!' });
+      return;
+    }
+
+    if (prospectos.length > 0) {
+      res.send(prospectos);
+    } else {
+      res.send({ message: 'No results' });
+    }
+  };
 }
 
 export default ProspectoController;

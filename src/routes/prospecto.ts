@@ -36,6 +36,8 @@ router.get('/:id_prospecto',[checkJwt], ProspectoController.getById);
 
 router.get('/cedula/:cedula',[checkJwt], ProspectoController.getByCedula);
 
+router.get('/nombres/:nombres',[checkJwt], ProspectoController.getByNombre);
+
 // Create a new user
 router.post('/', [checkJwt],ProspectoController.new);
 
