@@ -218,7 +218,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
       //prospecto.hashPassword();
       await prospectoRepository.save(prospecto);
     } catch (e) {
-      return res.status(409).json({ message: 'Prospecto already exist', e });
+      return res.send({ message: 'Prospecto already exist', e });
     }
     // All ok
     res.send({ message: 'Prospecto created' });
