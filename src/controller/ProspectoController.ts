@@ -12,7 +12,7 @@ export class ProspectoController {
     try {
       prospectos = await prospectoRepository.find({ 
         where: {periodo: periodo},
-        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'], 
+        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada','sede', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'], 
         relations: ['user', 'periodo', 'carrera']  });
     } catch (e) {
       res.status(404).json({ message: 'Somenthing goes wrong!' });
@@ -102,7 +102,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
     try {
       const [prospectos, totalItems] = await prospectoRepository.findAndCount({
         where: { carrera: carrera, periodo:periodo },
-        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
+        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'sede', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
         relations: ['user', 'periodo', 'carrera'],
         take: parseInt(pageSize),
         skip: (parseInt(page) - 1) * parseInt(pageSize),
@@ -128,7 +128,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
     try {
           prospectos = await prospectoRepository.find({
             where: { carrera: carrera, periodo:periodo },
-            select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
+            select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'sede', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
             relations: ['user', 'periodo', 'carrera']
           });
 
@@ -153,7 +153,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
     try {
           prospectos = await prospectoRepository.find({
             where: { cedula: cedula },
-            select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
+            select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'sede' , 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
             relations: ['user', 'periodo', 'carrera']
           });
 
@@ -173,7 +173,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
     const { id_prospecto } = req.params;
     const prospectoRepository = getRepository(Prospectos);
     try {
-      const prospecto = await prospectoRepository.findOneOrFail(id_prospecto, { select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo','jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'], relations: ['user', 'periodo', 'carrera']  });
+      const prospecto = await prospectoRepository.findOneOrFail(id_prospecto, { select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo','jornada', 'sede' ,'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'], relations: ['user', 'periodo', 'carrera']  });
       res.send(prospecto);
     } catch (e) {
       res.send({ message: 'Not result', e });
@@ -181,7 +181,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
   };
 
   static new = async (req: Request, res: Response) => {
-    const { cedula, tipo_documento, nombres, estado, celular, fecha_registro, correo, carrera, jornada, pais, provincia, ciudad, sexo, colegio, fuente_registro, comentario, user, periodo } = req.body;
+    const { cedula, tipo_documento, nombres, estado, celular, fecha_registro, correo, carrera, jornada, sede, pais, provincia, ciudad, sexo, colegio, fuente_registro, comentario, user, periodo } = req.body;
     const prospecto = new Prospectos();
 
     prospecto.cedula = cedula;
@@ -194,6 +194,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
     prospecto.correo = correo;
     prospecto.carrera = carrera;
     prospecto.jornada = jornada;
+    prospecto.sede = sede;
     prospecto.pais = pais;
     prospecto.provincia = provincia;
     prospecto.ciudad = ciudad;
@@ -226,7 +227,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
   static edit = async (req: Request, res: Response) => {
     let prospecto;
     const { id_prospecto } = req.params;
-    const { cedula, tipo_documento, nombres, estado, idperiodo, celular, fecha_registro, correo, carrera, jornada, pais, provincia, ciudad, sexo, colegio, fuente_registro, comentario, user, periodo } = req.body;
+    const { cedula, tipo_documento, nombres, estado, idperiodo, celular, fecha_registro, correo, carrera, jornada, sede, pais, provincia, ciudad, sexo, colegio, fuente_registro, comentario, user, periodo } = req.body;
 
     const prospectoRepository = getRepository(Prospectos);
     // Try get user
@@ -242,6 +243,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
       prospecto.correo = correo;
       prospecto.carrera = carrera;
       prospecto.jornada = jornada;
+      prospecto.sede = sede;
       prospecto.pais = pais;
       prospecto.provincia = provincia;
       prospecto.ciudad = ciudad;
@@ -300,7 +302,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
 
     try {
       const [prospectos, totalItems] = await prospectoRepository.findAndCount({
-        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
+        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'sede' , 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
         relations: ['user', 'periodo', 'carrera'],
         where: {periodo: periodo},
         take: parseInt(pageSize),
@@ -325,7 +327,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
 
     try {
       const [prospectos, totalItems] = await prospectoRepository.findAndCount({
-        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
+        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'sede', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
         relations: ['user', 'periodo', 'carrera'],
         where: {
           estado: Not(In(['DESCARTADO', 'DESCARTADO DEFINITIVAMENTE', 'MATRICULADO/A'])),
@@ -352,7 +354,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
 
     try {
       const [prospectos, totalItems] = await prospectoRepository.findAndCount({
-        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
+        select: ['id_prospecto', 'cedula', 'tipo_documento', 'nombres', 'estado', 'celular', 'fecha_registro', 'correo', 'jornada', 'sede', 'pais', 'provincia', 'ciudad', 'sexo', 'colegio', 'fuente_registro', 'comentario'],
         relations: ['user', 'periodo', 'carrera'],
         where: {
           estado: Not(In(['DESCARTADO', 'DESCARTADO DEFINITIVAMENTE', 'MATRICULADO/A'])), 

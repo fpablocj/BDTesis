@@ -39,6 +39,9 @@ export class Prospectos {
   @Column({ type: "varchar", length: 30 })
   jornada: string;
 
+  @Column({ type: "varchar", length: 40 })
+  sede: string;
+
   @Column({ type: "varchar", length: 50 })
   pais: string;
 
