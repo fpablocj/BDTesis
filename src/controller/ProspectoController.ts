@@ -267,7 +267,7 @@ static getCountByCarreraAndEstado = async (req: Request, res: Response) => {
     try {
       await prospectoRepository.save(prospecto);
     } catch (e) {
-      return res.status(409).json({ message: 'Cedula already in use', e });
+      return res.send({ message: 'Cedula already in use', e });
     }
 
     res.status(201).json({ message: 'Prospecto update' });
