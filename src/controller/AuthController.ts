@@ -28,9 +28,6 @@ class AuthController {
     }
 
     const token = jwt.sign({ userId: user.id, username: user.username }, config.jwtSecret, { expiresIn: '120m' });
-    const refreshToken = jwt.sign({ userId: user.id, username: user.username }, config.jwtSecretRefresh, { expiresIn: '120m' });
-
-    user.refreshToken = refreshToken;
     try {
       await userRepository.save(user)
     } catch (error) {
@@ -38,7 +35,7 @@ class AuthController {
       
     }
 
-    res.json({ message: 'OK', token, refreshToken, userId: user.id, username:user.username, name:user.name, role: user.role, carrera: user.carrera.id_carrera });
+    res.json({ message: 'OK', token, userId: user.id, username:user.username, name:user.name, role: user.role, carrera: user.carrera.id_carrera, unidad_academica:user.unidad_academica });
   };
 
   static changePassword = async (req: Request, res: Response) => {
@@ -76,32 +73,6 @@ class AuthController {
 
     res.json({ message: 'Password change!' });
   };
-
-
-  static refreshToken = async (req: Request, res: Response) => {
-
-    const refreshToken = req.headers.refresh as string;
-    if(!refreshToken){
-      res.status(400).json({message: 'Something goes wrong'})
-    }
-
-    const userRepository = getRepository(Users);
-    let user: Users;
-
-    try {
-
-      const verifyResult = jwt.verify(refreshToken, config.jwtSecretRefresh)
-      const {username} = verifyResult as Users;
-      user  = await userRepository.findOneOrFail({where : {username}})
-      
-    } catch (error) {
-      return res.status(400).json({message: 'Something goes wrong'})
-    }
-
-    const token = jwt.sign({userId: user.id, username: user.username}, config.jwtSecretRefresh, {expiresIn: '120m'});
-    res.json({message: 'Ok', token})
-
-  }
 
 }
     

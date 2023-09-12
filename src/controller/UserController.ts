@@ -9,7 +9,7 @@ export class UserController {
     let users;
 
     try {
-      users = await userRepository.find({ select: ['id', 'name', 'username', 'role'], relations: ['carrera'] });
+      users = await userRepository.find({ select: ['id', 'name', 'username', 'role', 'unidad_academica'], relations: ['carrera'] });
     } catch (e) {
       res.status(404).json({ message: 'Somenthing goes wrong!' });
     }
@@ -25,7 +25,7 @@ export class UserController {
     const { id } = req.params;
     const userRepository = getRepository(Users);
     try {
-      const user = await userRepository.findOneOrFail(id, {select:['name', 'username', 'role', 'password'], relations:['carrera']});
+      const user = await userRepository.findOneOrFail(id, {select:['name', 'username', 'role', 'password', 'unidad_academica'], relations:['carrera']});
       res.send(user);
     } catch (e) {
       res.send({ message: 'Not result', e });
@@ -33,7 +33,7 @@ export class UserController {
   };
 
   static new = async (req: Request, res: Response) => {
-    const { name, username, password, role, carrera } = req.body;
+    const { name, username, password, role, carrera, unidad_academica } = req.body;
     const user = new Users();
 
 
@@ -42,6 +42,7 @@ export class UserController {
     user.password = password;
     user.role = role;
     user.carrera = carrera;
+    user.unidad_academica = unidad_academica;
 
     // Validate
     const validationOpt = { validationError: { target: false, value: false } };
@@ -66,7 +67,7 @@ export class UserController {
   static edit = async (req: Request, res: Response) => {
     let user;
     const { id } = req.params;
-    const { name, username, role, carrera } = req.body;
+    const { name, username, role, carrera, unidad_academica } = req.body;
 
     const userRepository = getRepository(Users);
     try {
@@ -75,8 +76,9 @@ export class UserController {
       user.username = username;
       user.role = role;
       user.carrera = carrera;
+      user.unidad_academica = unidad_academica;
     } catch (e) {
-      return res.send({ message: 'User not found' });
+      return res.send({ message: 'User not found', e });
     }
     const validationOpt = { validationError: { target: false, value: false } };
     const errors = await validate(user, validationOpt);

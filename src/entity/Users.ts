@@ -28,13 +28,11 @@ export class Users {
   password: string;
 
   @Column()
-  @IsOptional()
-  @IsNotEmpty()
-  refreshToken: string;
-
-  @Column()
   @IsNotEmpty()
   role: string;
+
+  @Column()
+  unidad_academica: string;
 
   @ManyToOne(() => Carreras, (carrera)=> carrera.prospecto)
   @JoinColumn({ name: "id_carrera"})
