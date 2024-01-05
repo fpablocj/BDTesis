@@ -14,7 +14,7 @@ router.get('/:id_carrera', [checkJwt], CarreraController.getById);
 router.get('/nombre/:nombre', [checkJwt], CarreraController.getByNombre);
 
 // Create a new user
-router.post('/', [checkJwt], CarreraController.new);
+router.post('/', CarreraController.new);
 
 // Edit user
 router.patch('/:id_carrera', [checkJwt], CarreraController.edit);
