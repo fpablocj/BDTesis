@@ -6,13 +6,13 @@ import { Router } from 'express';
 const router = Router();
 
 // Get all users
-router.get('/',[checkJwt], UserController.getAll);
+router.get('/', UserController.getAll);
 
 // Get one user
 router.get('/:id', [checkJwt],UserController.getById);
 
 // Create a new user
-router.post('/',[checkJwt], UserController.new);
+router.post('/', UserController.new);
 
 // Edit user
 router.patch('/:id',[checkJwt], UserController.edit);
